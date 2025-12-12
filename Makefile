@@ -62,32 +62,11 @@ open-code: base
 
 clean:
 	@echo "Removing container images"
-	@if $(CONTAINER_ENGINE) image inspect claude-code > /dev/null 2>&1; then \
-		echo "Removing claude-code"; \
-		$(CONTAINER_ENGINE) rmi -f claude-code; \
-	else \
-		echo "Image claude-code does not exist, skipping"; \
-	fi
-	@if $(CONTAINER_ENGINE) image inspect openai-codex > /dev/null 2>&1; then \
-		echo "Removing openai-codex"; \
-		$(CONTAINER_ENGINE) rmi -f openai-codex; \
-	else \
-		echo "Image openai-codex does not exist, skipping"; \
-	fi
-	@if $(CONTAINER_ENGINE) image inspect agent-base > /dev/null 2>&1; then \
-		echo "Removing agent-base"; \
-		$(CONTAINER_ENGINE) rmi -f agent-base; \
-	else \
-		echo "Image agent-base does not exist, skipping"; \
-	fi
-	@echo "Removing dangling images (unused layers)..."
-	@$(CONTAINER_ENGINE) image prune -f
-
-deep-clean: clean
-	@echo "Removing all build cache and containers (use with caution)..."
-	@$(CONTAINER_ENGINE) builder prune -af
-	@echo "Removing all containers..."
-	@$(CONTAINER_ENGINE) container prune -f
-	@echo "Removing all unused volumes..."
-	@$(CONTAINER_ENGINE) volume prune -f
-
+	@for image in open-code claude-code openai-codex agent-base; do \
+		if $(CONTAINER_ENGINE) image inspect $$image > /dev/null 2>&1; then \
+			echo "Removing $$image"; \
+			$(CONTAINER_ENGINE) rmi -f $$image; \
+		else \
+			echo "Image $$image does not exist, skipping"; \
+		fi; \
+	done
