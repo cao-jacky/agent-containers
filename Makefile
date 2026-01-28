@@ -1,4 +1,4 @@
-.PHONY: all clean deep-clean base claude-code openai-codex
+.PHONY: all clean deep-clean base claude-code openai-codex open-code moltbot mistral-vibe
 
 # Determine container engine (podman or docker)
 CONTAINER_ENGINE := $(shell which podman 2>/dev/null || which docker 2>/dev/null)
@@ -16,7 +16,7 @@ ifeq ($(CONTAINER_ENGINE),)
 $(error No container engine (podman/docker) found in PATH)
 endif
 
-all: base claude-code openai-codex
+all: base claude-code openai-codex open-code moltbot mistral-vibe
 
 base:
 	@echo "Building base image"
@@ -48,9 +48,16 @@ open-code: base
 		-t open-code \
 		-f open-code/Dockerfile open-code
 
+mistral-vibe: base
+	@echo "Building mistral-vibe"
+	$(CONTAINER_ENGINE) build \
+		--no-cache \
+		-t mistral-vibe \
+		-f mistral-vibe/Dockerfile mistral-vibe
+
 clean:
 	@echo "Removing container images"
-	@for image in open-code claude-code openai-codex agent-base; do \
+	@for image in open-code claude-code openai-codex moltbot agent-base; do \
 		if $(CONTAINER_ENGINE) image inspect $$image > /dev/null 2>&1; then \
 			echo "Removing $$image"; \
 			$(CONTAINER_ENGINE) rmi -f $$image; \

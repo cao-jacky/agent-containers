@@ -1,4 +1,4 @@
-FROM node:23-slim
+FROM node:24-slim
 
 ARG HOST_UID=1000
 ARG HOST_GID=1000
@@ -15,6 +15,9 @@ RUN apt-get update && \
 COPY --from=oven/bun:1 /usr/local/bin/bun /usr/local/bin/bun
 # Create the bunx symlink (standard practice)
 RUN ln -s /usr/local/bin/bun /usr/local/bin/bunx
+
+# Install pnpm globally
+RUN npm install -g pnpm@latest
 
 # Install tod (One Dev CLI / MCP binary)
 COPY bin/tod /usr/local/bin/tod
@@ -40,6 +43,10 @@ ENV PATH=$NPM_CONFIG_PREFIX/bin:$PATH
 # This ensures 'bun install -g' works without root and saves to the user home
 ENV BUN_INSTALL=/home/node/.bun
 ENV PATH=$BUN_INSTALL/bin:$PATH
+
+# Configure pnpm location for 'node' user
+ENV PNPM_HOME=/home/node/.pnpm
+ENV PATH=$PNPM_HOME:$PATH
 
 RUN mkdir -p /home/node/.npm-global && \
   mkdir -p /home/node/.config && \
