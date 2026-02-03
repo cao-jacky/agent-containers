@@ -6,11 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `make all` - Build all containers
 - `make claude-code` - Build Claude Code container
 - `make openai-codex` - Build OpenAI Codex container
+- `make cursor` - Build Cursor container
 - `make clean` - Remove Docker images and prune dangling images
 
 ## Run Commands
 - Claude Code: `docker run -it --rm -v ${HOME}/.config/claude/claude.json:/home/codeuser/.claude.json:rw -v $(pwd):/app:rw claude-code`
 - OpenAI Codex: `docker run -it --rm -e OPENAI_API_KEY -v ${HOME}/.config/codex:/home/codeuser/.codex:rw -v $(pwd):/app:rw openai-codex`
+- Cursor: `docker run -it --rm -v ${HOME}/.config/cursor:/home/node/.config/cursor:rw -v $(pwd):/app:rw cursor`
 - Aider: `docker run -it --rm --user $(id -u):$(id -g) -e OPENAI_API_KEY -e ANTHROPIC_API_KEY -v $(pwd):/app:rw paulgauthier/aider`
 
 ## Code Style Guidelines
